@@ -30,7 +30,35 @@ require File.expand_path(File.dirname(__FILE__) + '/neo')
 # Your goal is to write the score method.
 
 def score(dice)
-  # You need to write this method
+  result = 0
+  counts = Hash.new(0)
+
+  dice.each do |value|
+    counts[value] += 1 #counts how many times a number repeats itself
+  end
+
+  counts.each do |number, times|
+    # * A set of three ones is 1000 points
+    if number == 1 && times >= 3
+      result += 1000
+      times -= 3
+    end
+    # * A set of three numbers (other than ones) is worth 100 times the
+    #   number. (e.g. three fives is 500 points).
+    if number != 1 && times >= 3
+      result += number * 100
+      times -= 3
+    end
+    # * A one (that is not part of a set of three) is worth 100 points.
+    if number == 1 && times <= 2
+      result += 100 * times
+    end
+    # * A five (that is not part of a set of three) is worth 50 points.
+    if number == 5 && times <= 2
+      result += 50 * times
+    end
+  end
+  result
 end
 
 class AboutScoringProject < Neo::Koan
@@ -68,9 +96,9 @@ class AboutScoringProject < Neo::Koan
 
   def test_score_of_mixed_is_sum
     assert_equal 250, score([2,5,2,2,3])
-    assert_equal 550, score([5,5,5,5])
+    assert_equal 550, score([5,5,5,5]) #times >= 3
     assert_equal 1100, score([1,1,1,1])
-    assert_equal 1200, score([1,1,1,1,1])
+    assert_equal 1200, score([1,1,1,1,1]) #times -= 3
     assert_equal 1150, score([1,1,1,5,1])
   end
 
