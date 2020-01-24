@@ -6,7 +6,7 @@ class DiceSet
   attr_reader :values
 
   def roll(number)
-    @values = (1..number).map { |number| rand(1..6) }
+    @values = Array.new(number).map { |number| rand(1..6) }
   end
 
 end
